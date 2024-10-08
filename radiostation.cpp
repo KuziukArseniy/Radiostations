@@ -1,7 +1,9 @@
 #include "radiostation.h"
 #include "communications.h"
+#include "radius.h"
 #include <QBrush>
-#include<QDebug>
+#include <QDebug>
+#include <QGraphicsScene>
 
 QList<Radiostation*> Radiostation::radiostations;
 
@@ -23,12 +25,11 @@ void Radiostation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     //окружность в зелёный при нажатии
     //setBrush(QBrush(Qt::green));
-
-    QGraphicsEllipseItem::mousePressEvent(event);
 }
 
 void Radiostation::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
-    Communications* comm = new Communications();
-    comm->checkCollisions();
+    Communications::checkCollisions();
+
+    QGraphicsEllipseItem::mouseMoveEvent(event);
 }

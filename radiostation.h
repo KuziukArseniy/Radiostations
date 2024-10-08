@@ -9,15 +9,15 @@
 
 /**
  * @brief The Radiostation class
- * В данном классе содержаться данные о радиостанциях
- * Здесь обработано событие, которое срабатывает по нажатию на станцию
+ * В этом классе представелна реализация радиостанции
+ * Здесь реализованы события на передвижение радиостанции и на клик на радиостанцию
  */
+
 class Radiostation : public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
     Radiostation(int x, int y, int width, int height);
-
     static QList<Radiostation*> radiostations;
 
 protected:

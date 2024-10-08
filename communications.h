@@ -1,31 +1,32 @@
 #ifndef COMMUNICATIONS_H
 #define COMMUNICATIONS_H
 
-#include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
-#include <QGraphicsItem>
 #include "radiostation.h"
+#include "radius.h"
+
+/**
+ * @brief The Communications class
+ * В этом классе представлены связи между радиостанциями
+ * Здесь реализованы проверка соприкосновения станций и генерация связи между станциями
+ */
 
 class Communications: QGraphicsItem
 {
 public:
-    Communications();
+    Communications()
+    {
 
+    }
     ~Communications()
     {
-        delete line;
+
     }
 
-    void checkCollisions();
+    static void checkCollisions();
+    static void updateLine(Radiostation* radiostation1, Radiostation* radius);
 
-    QRectF boundingRect() const override;
-
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
-
-private:
-    QGraphicsLineItem* line;
-    void updateLine(Radiostation* radiostation1, Radiostation* radiostation2);
-    QList<QGraphicsLineItem*> lines;
+    static QList<QGraphicsLineItem*> lines;
 };
 
 #endif // COMMUNICATIONS_H

@@ -59,8 +59,8 @@ void MainWindow::on_createRadioButton_clicked()
     scene->addItem(textItem);
 
     //добавление элементов в классы для последующей работы с ими
-    radiostations.append(radiostation);
-    radiuses.append(radius);
+    Radiostation::radiostations.append(radiostation);
+    Radius::radiuses.append(radius);
 
     //добавление родителя для передвижения за им
     radius->setParentItem(radiostation);

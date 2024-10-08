@@ -9,11 +9,6 @@
 #include <QList>
 #include <QDebug>
 
-Communications::Communications()
-{
-
-}
-
 QRectF boundingRect()
 {
     return QRectF(0, 0, 100, 100);
@@ -27,15 +22,6 @@ void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* w
 
 void Communications::checkCollisions()
 {
-    //удаление старых линий
-    for (auto lineItem : lines)
-    {
-        this->scene()->removeItem(lineItem);
-        delete lineItem;
-    }
-    lines.clear();
-
-
     //проверка столкновений с другими кругами
     for (auto i = 0; i < Radiostation::radiostations.size(); ++i)
     {
@@ -54,18 +40,30 @@ void Communications::checkCollisions()
 
 void Communications::updateLine(Radiostation* radiostation1, Radiostation* radiostation2)
 {
-    qDebug() << "Соприкоснулись";
     /*
-    //центр двух кругов в координатах сцены
-    QPointF center1 = this->mapToScene(this->boundingRect().center());
-    QPointF center2 = otherCircle->mapToScene(otherCircle->boundingRect().center());
+    //удаление старых линий
+    for (auto lineItem : lines)
+    {
+        this->scene()->removeItem(lineItem);
+        delete lineItem;
+    }
+    lines.clear();
+    */
+    qDebug() << "Соприкоснулись";
 
-    //создание линии между центрами двух кругов
+    /*
+    //центры радиостанций и радиусов
+    QPointF center1 = radiostation1->scenePos() + radiostation1->rect().center();
+    QPointF center2 = radiostation2->scenePos() + radiostation2->rect().center();
+
+    // Создаем линию между центрами
     QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(center1, center2));
     line->setPen(QPen(Qt::red, 2));
 
-    //добавление линии
-    this->scene()->addItem(line);
+    //добавление линии на сцену
+    radiostation1->scene()->addItem(line);
+
+    //добавление линии в список
     lines.append(line);
     */
 }

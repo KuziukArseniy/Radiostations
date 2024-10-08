@@ -6,6 +6,12 @@
 #include <QDebug>
 #include <QPen>
 
+/**
+ * @brief The Radius class
+ * В этом клссе представлена реализация радиуса действия радиостанции
+ * Данный класс нужен для определения радиуса действия станции для последующей связи между станциями
+ */
+
 class Radius : public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
