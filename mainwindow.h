@@ -23,6 +23,8 @@ public:
 private slots:
     void on_createRadioButton_clicked();
 
+    void on_messageButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;

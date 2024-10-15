@@ -3,7 +3,6 @@
 
 #include <QGraphicsLineItem>
 #include "radiostation.h"
-#include "radius.h"
 
 /**
  * @brief The Communications class
@@ -26,7 +25,10 @@ public:
     static void checkCollisions();
     static void updateLine(Radiostation* radiostation1, Radiostation* radius);
 
+    static void setSc(QGraphicsScene* sc);
+
     static QList<QGraphicsLineItem*> lines;
+    static QGraphicsScene* scene;
 };
 
 #endif // COMMUNICATIONS_H

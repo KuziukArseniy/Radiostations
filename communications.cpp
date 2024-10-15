@@ -9,20 +9,19 @@
 #include <QList>
 #include <QDebug>
 
-QRectF boundingRect()
+QList<QGraphicsLineItem*> Communications::lines;
+
+QGraphicsScene* Communications::scene;
+
+//метод, который принимает сцену для последующей работы с ней
+void Communications::setSc(QGraphicsScene* sc)
 {
-    return QRectF(0, 0, 100, 100);
+    Communications::scene = sc;
 }
 
-void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
-{
-    painter->setBrush(Qt::blue);
-    painter->drawRect(boundingRect());
-}
-
+//метод, который проверяет соприкосеновения с другими радиостанциями
 void Communications::checkCollisions()
 {
-    //проверка столкновений с другими кругами
     for (auto i = 0; i < Radiostation::radiostations.size(); ++i)
     {
         for (auto j = 0; j < Radius::radiuses.size(); ++j)
@@ -38,25 +37,57 @@ void Communications::checkCollisions()
     }
 }
 
+//метод отрисовки связей между радиостанциями
 void Communications::updateLine(Radiostation* radiostation1, Radiostation* radiostation2)
 {
     /*
-    //удаление старых линий
-    for (auto lineItem : lines)
+    for (QGraphicsLineItem* lineItem : lines)
     {
-        this->scene()->removeItem(lineItem);
+        QLineF oldLine = lineItem->line();
+        QPointF center1 = radiostation1->scenePos() + radiostation1->rect().center();
+        QPointF center2 = radiostation2->scenePos() + radiostation2->rect().center();
+
+        if ((oldLine.p1() != center1 && oldLine.p2() != center2) ||
+            (oldLine.p1() != center2 && oldLine.p2() != center1))
+        {
+            scene->removeItem(lineItem);
+            lines.removeOne(lineItem);
+        }
+    }
+    */
+
+    //центры радиостанций
+    QPointF center1 = radiostation1->scenePos() + radiostation1->rect().center();
+    QPointF center2 = radiostation2->scenePos() + radiostation2->rect().center();
+
+    //создаем линию между центрами
+    QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(center1, center2));
+    line->setPen(QPen(Qt::red, 2));
+
+    //добавляем линию на сцену
+    radiostation1->scene()->addItem(line);
+
+    //добавляем линию в список
+    lines.append(line);
+
+
+}
+
+    /*
+    //удаление старых линий
+    for (QGraphicsLineItem* lineItem : lines)
+    {
+        scene->removeItem(lineItem);
         delete lineItem;
     }
     lines.clear();
-    */
-    qDebug() << "Соприкоснулись";
+    //qDebug() << "Соприкоснулись";
 
-    /*
     //центры радиостанций и радиусов
     QPointF center1 = radiostation1->scenePos() + radiostation1->rect().center();
     QPointF center2 = radiostation2->scenePos() + radiostation2->rect().center();
 
-    // Создаем линию между центрами
+    //линия между центрами
     QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(center1, center2));
     line->setPen(QPen(Qt::red, 2));
 
@@ -66,4 +97,3 @@ void Communications::updateLine(Radiostation* radiostation1, Radiostation* radio
     //добавление линии в список
     lines.append(line);
     */
-}

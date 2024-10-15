@@ -21,6 +21,7 @@ public:
     {
         QPen penRadius(Qt::DashLine);
         setPen(penRadius);
+        setZValue(0);
     }
 
     static QList<Radius*> radiuses;
