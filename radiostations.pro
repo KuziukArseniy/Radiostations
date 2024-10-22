@@ -12,14 +12,12 @@ SOURCES += \
     communications.cpp \
     main.cpp \
     mainwindow.cpp \
-    radiostation.cpp \
-    radius.cpp
+    radiostation.cpp
 
 HEADERS += \
     communications.h \
     mainwindow.h \
-    radiostation.h \
-    radius.h
+    radiostation.h
 
 FORMS += \
     mainwindow.ui

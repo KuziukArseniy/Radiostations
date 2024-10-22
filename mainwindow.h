@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include "radiostation.h"
-#include "radius.h"
 #include <QMainWindow>
 #include <QGraphicsScene>
 
@@ -28,8 +27,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
-    QList<Radiostation*> radiostations;
-    QList<Radius*> radiuses;
-    QList<QGraphicsTextItem*> textItems;
+    //QList<Radiostation*> radiostations;
+    //QList<Radius*> radiuses;
+    //QList<QGraphicsTextItem*> textItems;
 };
 #endif // MAINWINDOW_H

@@ -2,7 +2,6 @@
 #define COMMUNICATIONS_H
 
 #include <QGraphicsLineItem>
-#include "radiostation.h"
 
 /**
  * @brief The Communications class
@@ -23,11 +22,13 @@ public:
     }
 
     static void checkCollisions();
-    static void updateLine(Radiostation* radiostation1, Radiostation* radius);
+    static void updateLine(QGraphicsEllipseItem* radiostation1, QGraphicsEllipseItem* radius);
+    static void deleteLines();
 
     static void setSc(QGraphicsScene* sc);
 
     static QList<QGraphicsLineItem*> lines;
+    static QList<bool*> linesIsCollide;
     static QGraphicsScene* scene;
 };
 

@@ -18,12 +18,19 @@ class Radiostation : public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
-    Radiostation(int x, int y, int width, int height);
-    static QList<Radiostation*> radiostations;
+    //Radiostation(int x, int y, int width, int height, int id, int power);
+    Radiostation(int width, int height, int id, int power);
+    static QList<QGraphicsEllipseItem*> radiostations;
+    static QList<QGraphicsEllipseItem*> radiuses;
     static Ui::MainWindow *ui;
     void getWhite();
     static void sendMessage(QString message);
     static int getIdRadiostation();
+
+
+private:
+    QGraphicsEllipseItem* radiusItem;  // Для отображения радиуса действия
+    QGraphicsTextItem* textItem;
 
 private slots:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
