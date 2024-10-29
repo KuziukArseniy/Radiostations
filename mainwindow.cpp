@@ -1,8 +1,11 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "radiostation.h"
 #include "communications.h"
+#include "radiocontainer.h"
 #include <QMessageBox>
+#include <radiocontainer.h>
+
+#include <QDebug>
 
 //конструктор класса MainWindow
 MainWindow::MainWindow(QWidget *parent)
@@ -13,10 +16,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->simulatioArea->setScene(scene);
 
-    Communications::scene = scene;
+    //Communications::scene = scene;
     Communications::setSc(scene);
 
     Radiostation::ui = ui;
+
+    RadioContainer::scene = this->scene;
 }
 
 //деструктор класса MainWindow
@@ -37,13 +42,14 @@ void MainWindow::on_createRadioButton_clicked()
         int id = ui->editId->text().toInt();
 
         //создание объектов и их параметров
-        Radiostation *radiostation = new Radiostation(30, 30, id, power);
+        //Radiostation *radiostation = new Radiostation(30, 30, id, power);
 
+        RadioContainer::addRadiostation(30, 30, id, power);
         //расположение радиостанции
         //radiostation->setPos(x, y);
 
         //добавление элементов
-        scene->addItem(radiostation);
+        //scene->addItem(radiostation);
 
         //итерация для ID
         ui->editId->setText(QString::number(ui->editId->text().toInt() + 1));

@@ -1,6 +1,6 @@
 #include "radiostation.h"
 #include "communications.h"
-#include "ui_mainwindow.h"
+#include "radiocontainer.h"
 #include <QBrush>
 #include <QDebug>
 #include <QGraphicsScene>
@@ -119,9 +119,11 @@ void Radiostation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //событие, срабатывающее при перемещении радиостанции
 void Radiostation::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    QGraphicsEllipseItem::mouseMoveEvent(event);
+
     Communications::checkCollisions();
 
-    QGraphicsEllipseItem::mouseMoveEvent(event);
+    RadioContainer::drawScene();
 
     QString currentDateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     ui->logsTextEdit->appendPlainText(currentDateTime + " Radiostation moved");
