@@ -4,6 +4,10 @@
 #include <radiostation.h>
 #include <QGraphicsView>
 
+/**
+ * @brief The RadioContainer class
+ * Это класс контейнер, он нужен для перерисовки сцены и хранения контейнера радиостанций6
+ */
 class RadioContainer
 {
 public:
@@ -13,11 +17,11 @@ public:
     static void removeRadiostation(int id);
     static void drawScene();
     static void setObject(QObject object);
-    static void initializeScene(QGraphicsScene* sc);
-    static  QGraphicsScene *scene;
+    static void setScene(QGraphicsScene* scene);
 
 private:
     static QList<Radiostation*> containerRadiostations;
+    static QGraphicsScene* scene;
 };
 
 #endif // RADIOCONTAINER_H

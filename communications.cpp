@@ -6,10 +6,12 @@
 #include <QMessageBox>
 #include <QGraphicsScene>
 #include <QList>
+#include <QtMath>
+#include <QGraphicsPolygonItem>
 #include <QDebug>
 
 QList<QGraphicsLineItem*> Communications::lines;
-
+QList<QGraphicsPolygonItem*> Communications::arrows;
 QGraphicsScene* Communications::scene;
 
 //метод, который принимает сцену для последующей работы с ней
@@ -18,46 +20,22 @@ void Communications::setSc(QGraphicsScene* sc)
     Communications::scene = sc;
 }
 
-//метод для удлания отрисовки связей
-void Communications::deleteLines()
-{
-    for (int l = lines.size() - 1; l >= 0; --l)
-    {
-        bool lineExists = false;
-
-        for (int i = 0; i < Radiostation::radiostations.size(); ++i)
-        {
-            for (int j = 0; j < Radiostation::radiostations.size(); ++j)
-            {
-                if (i != j) {
-                    if (Radiostation::radiuses[i]->collidesWithItem(Radiostation::radiostations[j]))
-                    {
-                        lineExists = true;
-                        break;
-                    }
-                }
-            }
-            if (lineExists) break;
-        }
-
-        if (!lineExists)
-        {
-            scene->removeItem(lines[l]);
-            delete lines[l];
-            lines.removeAt(l);
-        }
-    }
-}
-
 //метод, который проверяет соприкосеновения с другими радиостанциями
 void Communications::checkCollisions()
 {
-    // Удаление устаревших линий
-    for (QGraphicsLineItem* line : lines) {
-        scene->removeItem(line);
+    //удаление устаревших линий
+    for (QGraphicsLineItem* line : lines)
+    {
         delete line;
     }
     lines.clear();
+
+    //удаление устаревших стрелок
+    for (QGraphicsPolygonItem* arrow : arrows)
+    {
+        delete arrow;
+    }
+    arrows.clear();
 
     for (int i = 0; i < Radiostation::radiostations.size(); i++)
     {
@@ -81,13 +59,44 @@ void Communications::updateLine(QGraphicsEllipseItem* radiostation1, QGraphicsEl
     QPointF center1 = radiostation1->scenePos() + radiostation1->rect().center();
     QPointF center2 = radiostation2->scenePos() + radiostation2->rect().center();
 
-    //создаем линию между центрами
-    QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(center1, center2));
-    line->setPen(QPen(Qt::red, 2));
+    //радиус радиостанций
+    qreal radius = radiostation1->rect().width() / 2;
 
-    //добавляем линию на сцену
+    //вектор от первой радиостанции ко второй
+    QLineF lineBetween(center1, center2);
+
+    //смещение начала и конеца линии к краям радиостанций
+    lineBetween.setP1(lineBetween.pointAt(radius / lineBetween.length()));
+    lineBetween.setP2(lineBetween.pointAt(1 - (radius / lineBetween.length())));
+
+    //линия от края первой радиостанции до края второй радиостанции
+    QGraphicsLineItem* line = new QGraphicsLineItem(lineBetween);
+    line->setPen(QPen(Qt::red, 2));
     radiostation1->scene()->addItem(line);
 
-    //добавляем линию в список
+    //угол линии для создания наконечника стрелки
+    double angle = std::atan2(lineBetween.dy(), lineBetween.dx());
+
+    //позиция стрелки на краю первой радиостанции
+    QPointF arrowTip = lineBetween.p1();
+
+    //длина и угол стрелки
+    qreal arrowSize = 10;
+    QPointF arrowP1 = arrowTip + QPointF(arrowSize * std::cos(angle - M_PI / 6),
+                                         arrowSize * std::sin(angle - M_PI / 6));
+    QPointF arrowP2 = arrowTip + QPointF(arrowSize * std::cos(angle + M_PI / 6),
+                                         arrowSize * std::sin(angle + M_PI / 6));
+
+    //треугольник для наконечника стрелки
+    QPolygonF arrowHead;
+    arrowHead << arrowTip << arrowP1 << arrowP2;
+
+    //добавление стрелки на сцену
+    QGraphicsPolygonItem* arrowItem = new QGraphicsPolygonItem(arrowHead);
+    arrowItem->setBrush(Qt::red);
+    radiostation1->scene()->addItem(arrowItem);
+
+    //добавление линии и стрелки в список
     lines.append(line);
+    arrows.append(arrowItem);
 }

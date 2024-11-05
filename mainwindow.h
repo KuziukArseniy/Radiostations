@@ -21,14 +21,12 @@ public:
 
 private slots:
     void on_createRadioButton_clicked();
-
+    void handleGraphicsViewClick(QMouseEvent* event);
+    bool eventFilter(QObject* obj, QEvent* event);
     void on_messageButton_clicked();
 
 private:
-    Ui::MainWindow *ui;
-    QGraphicsScene *scene;
-    //QList<Radiostation*> radiostations;
-    //QList<Radius*> radiuses;
-    //QList<QGraphicsTextItem*> textItems;
+    Ui::MainWindow* ui;
+    QGraphicsScene* scene;
 };
 #endif // MAINWINDOW_H

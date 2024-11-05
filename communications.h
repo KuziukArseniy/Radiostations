@@ -23,12 +23,10 @@ public:
 
     static void checkCollisions();
     static void updateLine(QGraphicsEllipseItem* radiostation1, QGraphicsEllipseItem* radius);
-    static void deleteLines();
-
     static void setSc(QGraphicsScene* sc);
 
+    static QList<QGraphicsPolygonItem*> arrows;
     static QList<QGraphicsLineItem*> lines;
-    static QList<bool*> linesIsCollide;
     static QGraphicsScene* scene;
 };
 

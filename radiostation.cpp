@@ -14,7 +14,6 @@ QList<QGraphicsEllipseItem*> Radiostation::radiuses;
 Ui::MainWindow* Radiostation::ui = nullptr;
 
 //конструктор класса Radiostations
-//Radiostation::Radiostation(int x, int y, int width, int height, int id, int power)
 Radiostation::Radiostation(int width, int height, int id, int power)
     : QObject(), QGraphicsEllipseItem()
 {
@@ -59,6 +58,11 @@ Radiostation::Radiostation(int width, int height, int id, int power)
     //добавление родителя для передвижения за им
     radiusItem->setParentItem(this);
     textItem->setParentItem(this);
+}
+
+void Radiostation::setScene(Ui::MainWindow* scene)
+{
+    Radiostation::ui = scene;
 }
 
 //метод, который перекрашивает все круги в белый
