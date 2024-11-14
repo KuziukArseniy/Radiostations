@@ -8,29 +8,23 @@
 #include <QBrush>
 #include <QObject>
 
-/**
- * @brief The Radiostation class
- * В этом классе представелна реализация радиостанции
- * Здесь реализованы события на передвижение радиостанции и на клик на радиостанцию
- */
-
-class Radiostation : public QObject, public QGraphicsEllipseItem
+class Radiostation: public QObject, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
-    Radiostation(int width, int height, int id, int power);
-    static QList<QGraphicsEllipseItem*> radiostations;
-    static QList<QGraphicsEllipseItem*> radiuses;
+    Radiostation();
+    Radiostation(Ui::MainWindow *ui, int width, int height, int id, int power);
+    void sendMessage(QString message);
+    int getIdRadiostation();
     static void getWhite();
-    static void sendMessage(QString message);
-    static int getIdRadiostation();
-    static void setScene(Ui::MainWindow* scene);
-
+    static void checkCollisions();
 
 private:
+    static QList<QGraphicsEllipseItem*> radiostations;
+    static QList<QGraphicsEllipseItem*> radiuses;
     QGraphicsEllipseItem* radiusItem;
     QGraphicsTextItem* textItem;
-    static Ui::MainWindow* ui;
+    Ui::MainWindow* ui;
 
 public slots:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

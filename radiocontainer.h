@@ -6,22 +6,29 @@
 
 /**
  * @brief The RadioContainer class
- * Это класс контейнер, он нужен для перерисовки сцены и хранения контейнера радиостанций6
+ * Это класс контейнер, он нужен для отрисовки и перерисовки сцены и хранения контейнера радиостанций
  */
 class RadioContainer
 {
 public:
     RadioContainer();
+    RadioContainer(QGraphicsScene* scene, Ui::MainWindow *ui, int width, int height, int id, int power);
 
-    static void addRadiostation(int width, int height, int id, int power);
-    static void removeRadiostation(int id);
-    static void drawScene();
-    static void setObject(QObject object);
-    static void setScene(QGraphicsScene* scene);
+    void addRadiostation();
+    void drawScene();
+    static void deleteRadioCommunications();
+    static void updateLine(QGraphicsEllipseItem* radiostation1, QGraphicsEllipseItem* radius);
 
 private:
+    static QList<QGraphicsPolygonItem*> arrows;
+    static QList<QGraphicsLineItem*> lines;
     static QList<Radiostation*> containerRadiostations;
-    static QGraphicsScene* scene;
+    Ui::MainWindow *ui;
+    QGraphicsScene* scene;
+    int width;
+    int height;
+    int id;
+    int power;
 };
 
 #endif // RADIOCONTAINER_H

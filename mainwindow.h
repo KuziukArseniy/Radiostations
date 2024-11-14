@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "radiostation.h"
 #include <QMainWindow>
 #include <QGraphicsScene>
 
@@ -21,12 +20,12 @@ public:
 
 private slots:
     void on_createRadioButton_clicked();
+    void on_messageButton_clicked();
     void handleGraphicsViewClick(QMouseEvent* event);
     bool eventFilter(QObject* obj, QEvent* event);
-    void on_messageButton_clicked();
 
 private:
-    Ui::MainWindow* ui;
+    Ui::MainWindow *ui;
     QGraphicsScene* scene;
 };
 #endif // MAINWINDOW_H

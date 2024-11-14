@@ -1,13 +1,11 @@
 #include "mainwindow.h"
-#include "radiostation.h"
-#include "communications.h"
+#include "ui_mainwindow.h"
 #include "radiocontainer.h"
+#include "radiostation.h"
 #include <QMessageBox>
-#include <radiocontainer.h>
-
 #include <QDebug>
 
-//конструктор класса MainWindow
+//конструктор главной формы
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -15,40 +13,45 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->simulatioArea->setScene(scene);
-
-    Communications::setSc(scene);
-    Radiostation::setScene(ui);
-    RadioContainer::setScene(scene);
-
     ui->simulatioArea->viewport()->installEventFilter(this);
 }
 
-//деструктор класса MainWindow
+//деструктор главной формы
 MainWindow::~MainWindow()
 {
     delete ui;
     delete scene;
 }
 
-//метод для фильтрации событий
-bool MainWindow::eventFilter(QObject* obj, QEvent* event)
+//кнопка добавления радиостанции
+void MainWindow::on_createRadioButton_clicked()
 {
-    //проверка нажатия на сцену
-    if (obj == ui->simulatioArea->viewport() && event->type() == QEvent::MouseButtonPress)
-    {
-        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-        QPointF scenePos = ui->simulatioArea->mapToScene(mouseEvent->pos());
-        QGraphicsItem* item = scene->itemAt(scenePos, QTransform());
+    //мощность радиостанции
+    int power = ui->editPower->text().toInt();
 
-        //если элемент не найден, значит нажата пустая область сцены
-        if (!item) {
-            handleGraphicsViewClick(mouseEvent);
-            return true;
-        }
-        //если элемент найден, позволяем ему обрабатывать свои события
-        return false;
+    if(power >= 5 && power <= 20)
+    {
+        int id = ui->editId->text().toInt();
+
+        //добавление радиостанции
+        RadioContainer* radiostation = new RadioContainer(scene, ui, 30, 30, id, power);
+        radiostation->addRadiostation();
+
+        //итерация для ID
+        ui->editId->setText(QString::number(ui->editId->text().toInt() + 1));
     }
-    return QMainWindow::eventFilter(obj, event);
+    else
+    {
+        QMessageBox::information(this, "Ошибка", "Мощность должна быть 5-20");
+    }
+}
+
+//кнопка рассылки пакетов
+void MainWindow::on_messageButton_clicked()
+{
+    QString message = ui->editMessage->text();
+    Radiostation* radioSendMessage = new Radiostation();
+    radioSendMessage->sendMessage(message);
 }
 
 //обработчик нажатия по пустой части сцены
@@ -66,31 +69,24 @@ void MainWindow::handleGraphicsViewClick(QMouseEvent* event)
     }
 }
 
-//кнопка добавления радиостанции
-void MainWindow::on_createRadioButton_clicked()
+//метод для фильтрации событий
+bool MainWindow::eventFilter(QObject* obj, QEvent* event)
 {
-    //мощность радиостанции
-    int power = ui->editPower->text().toInt();
-
-    if(power >= 5 && power <= 20)
+    //проверка нажатия на сцену
+    if (obj == ui->simulatioArea->viewport() && event->type() == QEvent::MouseButtonPress)
     {
-        int id = ui->editId->text().toInt();
+        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        QPointF scenePos = ui->simulatioArea->mapToScene(mouseEvent->pos());
+        QGraphicsItem* item = scene->itemAt(scenePos, QTransform());
 
-        //добавление радиостанции
-        RadioContainer::addRadiostation(30, 30, id, power);
-
-        //итерация для ID
-        ui->editId->setText(QString::number(ui->editId->text().toInt() + 1));
+        //если элемент не найден, значит нажата пустая область сцены
+        if (!item)
+        {
+            handleGraphicsViewClick(mouseEvent);
+            return true;
+        }
+        //если элемент найден, позволяем ему обрабатывать свои события
+        return false;
     }
-    else
-    {
-        QMessageBox::information(this, "Ошибка", "Мощность должна быть 5-20");
-    }
-}
-
-//кнопка рассылки пакетов
-void MainWindow::on_messageButton_clicked()
-{
-    QString message = ui->editMessage->text();
-    Radiostation::sendMessage(message);
+    return QMainWindow::eventFilter(obj, event);
 }

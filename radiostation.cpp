@@ -1,5 +1,4 @@
 #include "radiostation.h"
-#include "communications.h"
 #include "radiocontainer.h"
 #include <QBrush>
 #include <QDebug>
@@ -11,11 +10,16 @@
 
 QList<QGraphicsEllipseItem*> Radiostation::radiostations;
 QList<QGraphicsEllipseItem*> Radiostation::radiuses;
-Ui::MainWindow* Radiostation::ui = nullptr;
 
-//конструктор класса Radiostations
-Radiostation::Radiostation(int width, int height, int id, int power)
-    : QObject(), QGraphicsEllipseItem()
+//конструктор по умолчанию
+Radiostation::Radiostation()
+{
+
+}
+
+//конструктор с параметрами
+Radiostation::Radiostation(Ui::MainWindow *ui, int width, int height, int id, int power)
+    : QObject(), QGraphicsEllipseItem(), ui(ui)
 {
     //генерация рандомных координат
     int x = QRandomGenerator::global()->bounded(0, 700);
@@ -58,11 +62,6 @@ Radiostation::Radiostation(int width, int height, int id, int power)
     //добавление родителя для передвижения за им
     radiusItem->setParentItem(this);
     textItem->setParentItem(this);
-}
-
-void Radiostation::setScene(Ui::MainWindow* scene)
-{
-    Radiostation::ui = scene;
 }
 
 //метод, который перекрашивает все круги в белый
@@ -120,18 +119,41 @@ void Radiostation::mousePressEvent(QGraphicsSceneMouseEvent *event)
     ui->logsTextEdit->appendPlainText(currentDateTime + " Radiostation pressed");
 }
 
-//событие, срабатывающее при перемещении радиостанции
+//метод, который проверяет соприкосеновения с другими радиостанциями
+void Radiostation::checkCollisions()
+{
+    //удаление старых связей пс: может попробовать сделать в перерисовке???????
+    RadioContainer::deleteRadioCommunications();
+
+    for (int i = 0; i < Radiostation::radiostations.size(); i++)
+    {
+        for (int j = 0; j < Radiostation::radiuses.size(); j++)
+        {
+            if (i != j)
+            {
+                if(Radiostation::radiuses[j]->collidesWithItem(Radiostation::radiostations[i]))
+                {
+                    RadioContainer::updateLine(Radiostation::radiostations[i], Radiostation::radiostations[j]);
+                }
+            }
+        }
+    }
+}
+
+// событие, срабатывающее при перемещении радиостанции
 void Radiostation::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    //базовое событие для перемещения радиостанции
     QGraphicsEllipseItem::mouseMoveEvent(event);
 
-    Communications::checkCollisions();
+    //проверка на столкновение
+    checkCollisions();
 
-    RadioContainer::drawScene();
-
+    //добавление записи в логи
     QString currentDateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     ui->logsTextEdit->appendPlainText(currentDateTime + " Radiostation moved");
 }
+
 
 //метод для рассылки сообщеинй
 void Radiostation::sendMessage(QString message)
