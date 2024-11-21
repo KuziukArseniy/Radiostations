@@ -8,7 +8,7 @@
 #include <QDateTime>
 #include <QRandomGenerator>
 
-QList<QGraphicsEllipseItem*> Radiostation::radiostations;
+QList<QGraphicsEllipseItem*> Radiostation::radiostationCircuits;
 QList<QGraphicsEllipseItem*> Radiostation::radiuses;
 
 //конструктор по умолчанию
@@ -35,7 +35,7 @@ Radiostation::Radiostation(Ui::MainWindow *ui, int width, int height, int id, in
     //уровень расположения радиостанции
     setZValue(1);
 
-    radiostations.append(this);
+    radiostationCircuits.append(this);
 
     //радиус действия
     radiusItem = new QGraphicsEllipseItem(x, y, width * power, height * power);
@@ -65,20 +65,20 @@ Radiostation::Radiostation(Ui::MainWindow *ui, int width, int height, int id, in
 }
 
 //метод, который перекрашивает все круги в белый
-void Radiostation::getWhite()
-{
-    for(int i = 0; i < radiostations.size(); i++)
-    {
-        radiostations[i]->setBrush(Qt::white);
-    }
-}
+// void Radiostation::getWhite()
+// {
+//     for(int i = 0; i < radiostationCircuits.size(); i++)
+//     {
+//         radiostationCircuits[i]->setBrush(Qt::white);
+//     }
+// }
 
 //методя для получения id выбранной радиостанции
 int Radiostation::getIdRadiostation()
 {
-    for (int i = 0; i < Radiostation::radiostations.size(); ++i)
+    for (int i = 0; i < Radiostation::radiostationCircuits.size(); ++i)
     {
-        if(radiostations[i]->brush().color() == Qt::green)
+        if(radiostationCircuits[i]->brush().color() == Qt::green)
         {
             return i;
         }
@@ -89,7 +89,7 @@ int Radiostation::getIdRadiostation()
 //событие, срабатывающее по нажатию на радиостанцию
 void Radiostation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    getWhite();
+    RadioContainer::getWhite();
     //окружность в зелёный при нажатии
     setBrush(QBrush(Qt::green));
 
@@ -102,11 +102,11 @@ void Radiostation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     int countCommunications = 0;
     //проверка столкновений с другими кругами
-    for (int i = 0; i < Radiostation::radiostations.size(); ++i)
+    for (int i = 0; i < Radiostation::radiostationCircuits.size(); ++i)
     {
         if(radioId != i)
         {
-            if(Radiostation::radiuses[radioId]->collidesWithItem(Radiostation::radiostations[i]))
+            if(Radiostation::radiuses[radioId]->collidesWithItem(Radiostation::radiostationCircuits[i]))
             {
                 countCommunications++;
             }
@@ -122,18 +122,17 @@ void Radiostation::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //метод, который проверяет соприкосеновения с другими радиостанциями
 void Radiostation::checkCollisions()
 {
-    //удаление старых связей пс: может попробовать сделать в перерисовке???????
     RadioContainer::deleteRadioCommunications();
 
-    for (int i = 0; i < Radiostation::radiostations.size(); i++)
+    for (int i = 0; i < Radiostation::radiostationCircuits.size(); i++)
     {
         for (int j = 0; j < Radiostation::radiuses.size(); j++)
         {
             if (i != j)
             {
-                if(Radiostation::radiuses[j]->collidesWithItem(Radiostation::radiostations[i]))
+                if(Radiostation::radiuses[j]->collidesWithItem(Radiostation::radiostationCircuits[i]))
                 {
-                    RadioContainer::updateLine(Radiostation::radiostations[i], Radiostation::radiostations[j]);
+                    RadioContainer::updateLine(Radiostation::radiostationCircuits[i], Radiostation::radiostationCircuits[j]);
                 }
             }
         }
@@ -154,32 +153,54 @@ void Radiostation::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     ui->logsTextEdit->appendPlainText(currentDateTime + " Radiostation moved");
 }
 
+//геттер для контура радиостанции
+QList<QGraphicsEllipseItem*> Radiostation::getRadiostationCircuits()
+{
+    return Radiostation::radiostationCircuits;
+}
+
+//сеттер для контура радиостанции
+void Radiostation::setRadiostationCircuits(QList<QGraphicsEllipseItem*> radiostationCircuits)
+{
+    Radiostation::radiostationCircuits = radiostationCircuits;
+}
+
+//геттер для радиуса действия радиостанции
+QList<QGraphicsEllipseItem*> Radiostation::getRadiuses()
+{
+    return Radiostation::radiuses;
+}
+
+//сетер для радиуса действия радиостанции
+void Radiostation::setRadiuses(QList<QGraphicsEllipseItem*> radiuses)
+{
+    Radiostation::radiuses = radiuses;
+}
 
 //метод для рассылки сообщеинй
-void Radiostation::sendMessage(QString message)
-{
+// void Radiostation::sendMessage(QString message)
+// {
+//     int radioId = getIdRadiostation();
 
-    int radioId = getIdRadiostation();
-
-    if(radioId == -1)
-    {
-        QMessageBox::information(NULL, "Ошибка", "Надо выбрать радиостанцию чтобы разослать пакет");
-    }
-    else
-    {
-        QString package= "";
-        for (int i = 0; i < Radiostation::radiostations.size(); ++i)
-        {
-            if(radioId != i)
-            {
-                if(Radiostation::radiuses[radioId]->collidesWithItem(Radiostation::radiostations[i]))
-                {
-                    std::stringstream textToPackage;
-                    textToPackage << "Радиостанция " << radioId + 1 << " отправляет сообщение радиостанции " << i + 1 << ": " << message.toStdString() << "\n";
-                    package += QString::fromStdString(textToPackage.str());
-                }
-            }
-        }
-        QMessageBox::information(NULL, "Рассылка пакетов", package);
-    }
-}
+//     if(radioId == -1)
+//     {
+//         QMessageBox::information(NULL, "Ошибка", "Надо выбрать радиостанцию чтобы разослать пакет");
+//     }
+//     else
+//     {
+//         QString package= "";
+//         for (int i = 0; i < Radiostation::radiostationCircuits.size(); ++i)
+//         {
+//             if(radioId != i)
+//             {
+//                 if(Radiostation::radiuses[radioId]->collidesWithItem(Radiostation::radiostationCircuits[i]))
+//                 {
+//                     std::stringstream textToPackage;
+//                     textToPackage << "Радиостанция " << radioId + 1 << " отправляет сообщение радиостанции " << i + 1 << ": " << message.toStdString() << "\n";
+//                     package += QString::fromStdString(textToPackage.str());
+//                 }
+//             }
+//         }
+//         QMessageBox::information(NULL, "Рассылка пакетов", package);
+//     }
+// }

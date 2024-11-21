@@ -1,6 +1,8 @@
 #include "radiocontainer.h"
 #include <radiostation.h>
 #include <QtMath>
+#include <sstream>
+#include <QMessageBox>
 #include <QDebug>
 
 QList<QGraphicsPolygonItem*> RadioContainer::arrows;
@@ -99,4 +101,45 @@ void RadioContainer::updateLine(QGraphicsEllipseItem* radiostation1, QGraphicsEl
     //добавление линии и стрелки в список
     RadioContainer::lines.append(line);
     RadioContainer::arrows.append(arrowItem);
+}
+
+//метод для рассылки сообщеинй
+void RadioContainer::sendMessage(QString message)
+{
+    int radioId = Radiostation::getIdRadiostation();
+
+    if(radioId == -1)
+    {
+        QMessageBox::information(NULL, "Ошибка", "Надо выбрать радиостанцию чтобы разослать пакет");
+    }
+    else
+    {
+        auto radiostationCircuits = Radiostation::getRadiostationCircuits();
+        auto radiuses = Radiostation::getRadiuses();
+        QString package= "";
+        for (int i = 0; i < radiostationCircuits.size(); ++i)
+        {
+            if(radioId != i)
+            {
+                if(radiuses[radioId]->collidesWithItem(radiostationCircuits[i]))
+                {
+                    std::stringstream textToPackage;
+                    textToPackage << "Радиостанция " << radioId + 1 << " отправляет сообщение радиостанции " << i + 1 << ": " << message.toStdString() << "\n";
+                    package += QString::fromStdString(textToPackage.str());
+                }
+            }
+        }
+        QMessageBox::information(NULL, "Рассылка пакетов", package);
+    }
+}
+
+//метод, который перекрашивает все круги в белый
+void RadioContainer::getWhite()
+{
+    auto radiostationCircuits = Radiostation::getRadiostationCircuits();
+    for(int i = 0; i < radiostationCircuits.size(); i++)
+    {
+        radiostationCircuits[i]->setBrush(Qt::white);
+    }
+    Radiostation::setRadiostationCircuits(radiostationCircuits);
 }

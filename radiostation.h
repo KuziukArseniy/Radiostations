@@ -14,13 +14,19 @@ class Radiostation: public QObject, public QGraphicsEllipseItem
 public:
     Radiostation();
     Radiostation(Ui::MainWindow *ui, int width, int height, int id, int power);
-    void sendMessage(QString message);
-    int getIdRadiostation();
-    static void getWhite();
+    static int getIdRadiostation();
+    //void sendMessage(QString message);
+    //static void getWhite();
     static void checkCollisions();
+    //static QList<QGraphicsEllipseItem*> radiostationCircuits;
+    //static QList<QGraphicsEllipseItem*> radiuses;
+    static QList<QGraphicsEllipseItem*> getRadiostationCircuits();
+    static void setRadiostationCircuits(QList<QGraphicsEllipseItem*> radiostationCircuits);
+    static QList<QGraphicsEllipseItem*> getRadiuses();
+    static void setRadiuses(QList<QGraphicsEllipseItem*> radiuses);
 
 private:
-    static QList<QGraphicsEllipseItem*> radiostations;
+    static QList<QGraphicsEllipseItem*> radiostationCircuits;
     static QList<QGraphicsEllipseItem*> radiuses;
     QGraphicsEllipseItem* radiusItem;
     QGraphicsTextItem* textItem;

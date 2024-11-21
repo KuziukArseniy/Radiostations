@@ -34,8 +34,8 @@ void MainWindow::on_createRadioButton_clicked()
         int id = ui->editId->text().toInt();
 
         //добавление радиостанции
-        RadioContainer* radiostation = new RadioContainer(scene, ui, 30, 30, id, power);
-        radiostation->addRadiostation();
+        RadioContainer* radioContainer = new RadioContainer(scene, ui, 30, 30, id, power);
+        radioContainer->addRadiostation();
 
         //итерация для ID
         ui->editId->setText(QString::number(ui->editId->text().toInt() + 1));
@@ -50,8 +50,9 @@ void MainWindow::on_createRadioButton_clicked()
 void MainWindow::on_messageButton_clicked()
 {
     QString message = ui->editMessage->text();
-    Radiostation* radioSendMessage = new Radiostation();
-    radioSendMessage->sendMessage(message);
+    //Radiostation* radioSendMessage = new Radiostation();
+    //radioSendMessage->sendMessage(message);
+    RadioContainer::sendMessage(message);
 }
 
 //обработчик нажатия по пустой части сцены
@@ -62,7 +63,8 @@ void MainWindow::handleGraphicsViewClick(QMouseEvent* event)
     QGraphicsItem* item = scene->itemAt(scenePos, QTransform());
     if (!item)
     {
-        Radiostation::getWhite();
+        //Radiostation::getWhite();
+        RadioContainer::getWhite();
         ui->tableRadiostations->setItem(0, 0, new QTableWidgetItem(""));
         ui->tableRadiostations->setItem(0, 1, new QTableWidgetItem(""));
         ui->tableRadiostations->setItem(0, 2, new QTableWidgetItem(""));

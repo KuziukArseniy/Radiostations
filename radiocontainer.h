@@ -16,6 +16,8 @@ public:
 
     void addRadiostation();
     void drawScene();
+    static void sendMessage(QString message);
+    static void getWhite();
     static void deleteRadioCommunications();
     static void updateLine(QGraphicsEllipseItem* radiostation1, QGraphicsEllipseItem* radius);
 
